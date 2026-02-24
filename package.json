@@ -1,0 +1,22 @@
+{
+  "name": "tinderai",
+  "version": "1.0.0",
+  "description": "A webapp for connecting AI enthusiast.",
+  "keywords": [
+    "node.js",
+    "express.js",
+    "react"
+  ],
+  "license": "ISC",
+  "author": "Shubham Kumar Agrawal",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev" : "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
