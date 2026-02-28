@@ -3,26 +3,20 @@ const connectDB = require('./config/database');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
 const { validatorSignup } = require('./utils/validator');
+const auth = require('./middlewares/auth');
 const app = express();
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
-
-
 app.use(cookieParser());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
-});
 
 app.post('/signup', async (req, res) => {
-
     try {
-
         validatorSignup(req);
         const { firstName, lastName, emailID } = req.body;
         const hashPassword = await bcrypt.hash(req.body.password, 10);
-        console.log(hashPassword);
+        //   console.log(hashPassword);
         const user = new User({ firstName, lastName, emailID, password: hashPassword });
         const savedUser = await user.save();
         res.status(201).json({ message: "User created successfully", user: savedUser });
@@ -32,7 +26,6 @@ app.post('/signup', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-
     try {
         const { emailID, password } = req.body;
         const validUser = await User.findOne({ emailID: emailID });
@@ -44,8 +37,8 @@ app.post('/login', async (req, res) => {
             return res.status(404).json({ message: 'Invalid credentials' });
         } else {
 
-            const token = await jwt.sign({ _id: validUser._id }, "asdfghjkl");
-            console.log(token);
+            const token = await jwt.sign({ _id: validUser._id }, "asdfghjkl", { expiresIn: new Date().getTime() + 24 * 60 * 60 * 1000 });
+            //  console.log(token);
             res.cookie('token', token);
 
             res.json({ message: 'Login successful', user: validUser });
@@ -56,87 +49,21 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/profile', async (req, res) => {
-    const cookie = req.cookies;
-    //console.log(cookie);
-    const { token } = cookie;   
-    const decodedMessage = await jwt.verify(token, "asdfghjkl");
-    console.log(decodedMessage);
-    const { _id } = decodedMessage;
-    const user = await User.findById(_id);
-    res.json({ message: 'This is the profile page', user: user });
-
-    res.json({ message: 'This is the profile page' });
-    // if(token === 'hsdcvwhnfhwiufhwiefhi1231r4kjwdnch234ir52kfnw'){
-    //     res.json({ message: 'This is the profile page' });
-    // }else{
-    //     res.status(401).json({ message: 'Unauthorized' });
-    // }   
-});
-//get user by emailid
-app.get('/user', async (req, res) => {
-
-    const email = req.query.emailId;
+app.get('/profile', auth, async (req, res) => {
     try {
-        const user = await User.findOne({ emailId: email });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        } else {
-            res.json(user);
-        }
-    }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-
-
-});
-
-//get all users
-app.get('/feed', async (req, res) => {
-    try {
-        const users = await User.find();
-        res.json(users);
+        const user = req.user;
+        res.json({ message: 'This is the profile page', user: user });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(401).json({ error: 'Unauthorized' });
     }
 });
-
-//delete user by emailid
-app.delete('/user', async (req, res) => {
-    const email = req.query.emailId;
+app.post('/connectionRequest', auth, async (req, res) => {
     try {
-        const deletedUser = await User.findOneAndDelete({ emailId: email });
-        if (!deletedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        } else {
-            res.json({ message: 'User deleted successfully', user: deletedUser });
-        }
-    }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-// update user by userid
-app.patch('/user', async (req, res) => {
-    const userId = req.query.userId;
-
-    try {
-        const AllowedUpdates = ['password', 'photourl', 'skills', 'gender'];
-        const updates = Object.keys(req.body).every((k) => AllowedUpdates.includes(k));
-        if (!updates) {
-            return res.status(400).json({ message: 'Invalid updates!' });
-        }
-
-        const updatedUser = await User.findByIdAndUpdate(userId, req.body, { new: true });
-        if (!updatedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        } else {
-            res.json({ message: 'User updated successfully', user: updatedUser });
-        }
-    }
-    catch (error) {
-        res.status(500).json({ error: error.message });
+        const user = req.user;
+        const { firstName } = user;
+        res.send(`Connection request sent to ${firstName}`);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 
