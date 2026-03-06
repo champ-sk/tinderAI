@@ -1,12 +1,13 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const requestsRouter = express.Router();
 const auth = require('../middlewares/auth');
 const { connection } = require('mongoose');
-const connectionRequest = require('../models/connectionRequest');
+const ConnectionRequest = require('../models/connectionRequest');
 const User = require('../models/user');
 
 
-requestsRouter.post('/request/send/:status/:toUserId', auth, async (req, res) => {
+requestsRouter.post('/request/send/:status/:requestId', auth, async (req, res) => {
     try {
         const fromUserId = req.user._id;
         const toUserId = req.params.toUserId;
@@ -56,5 +57,36 @@ requestsRouter.post('/request/send/:status/:toUserId', auth, async (req, res) =>
         res.status(400).json({ error: error.message });
     }
 });
+
+requestsRouter.post('/request/respond/:requestId/:status', auth, async (req, res) => {
+    try {
+        const {requestId ,status} = req.params;
+        const loggedInUserId = req.user._id;
+
+        // Validate the status parameter
+        const validStatuses = ['accepted', 'rejected'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ error: 'Invalid status value' });
+        }
+        //check the valid request
+        const validConnectionRequest = await ConnectionRequest.findOne({      
+            _id: requestId, 
+            toUserId: loggedInUserId,
+            status: 'interested'    
+        });
+        
+        if (!validConnectionRequest) {
+            return res.status(404).json({ error: 'The connection request you are trying to respond to does not exist' });
+        }
+
+        validConnectionRequest.status = status;
+        await validConnectionRequest.save();
+            res.json({ message: `Connection request ${status} successfully`, request: validConnectionRequest });
+       
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 
 module.exports = requestsRouter;
