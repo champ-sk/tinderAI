@@ -14,8 +14,8 @@ const validatorSignup = (req) => {
     if (!validator.isEmail(emailID)) {
         throw new Error('Invalid email format');
     }
-    if (!validator.isStrongPassword(password, { minLength: 12, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
-        throw new Error('Password must be at least 12 characters long and include uppercase letters, lowercase letters, numbers, and symbols');
+    if (!validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
+        throw new Error('Password must be at least 8 characters long and include uppercase letters, lowercase letters, numbers, and symbols');
     }
 };
 

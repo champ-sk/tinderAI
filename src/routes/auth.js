@@ -10,10 +10,10 @@ const jwt = require('jsonwebtoken');
 authRouter.post('/signup', async (req, res) => {
     try {
         validatorSignup(req);
-        const { firstName, lastName, emailID } = req.body;
+        const { firstName, lastName, emailID, age ,gender  } = req.body;
         const hashPassword = await bcrypt.hash(req.body.password, 10);
         //   console.log(hashPassword);
-        const user = new User({ firstName, lastName, emailID, password: hashPassword });
+        const user = new User({ firstName, lastName, emailID, password: hashPassword,age, gender });
         const savedUser = await user.save();
         res.status(201).json({ message: "User created successfully", user: savedUser });
     } catch (error) {

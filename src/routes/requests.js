@@ -10,26 +10,29 @@ const User = require('../models/user');
 requestsRouter.post('/request/send/:status/:requestId', auth, async (req, res) => {
     try {
         const fromUserId = req.user._id;
-        const toUserId = req.params.toUserId;
+        const toUserId = req.params.requestId;
         const status = req.params.status;
         // Validate the status parameter
+      //  console.log(fromUserId);
+      //  console.log(toUserId);
         const validStatuses = ['interested', 'ignored'];
         if (!validStatuses.includes(status)) {
             return res.status(400).json({ error: 'Invalid status value' });
         }
         // Check if the fromUserId and toUserId are the same
-        if (fromUserId.toString() === toUserId) {
+        if (fromUserId.toString() === toUserId.toString()) {
             return res.status(400).json({ error: 'You cannot send a connection request to yourself' });
         }
 
         // Check if the toUserId exists in the database
         const toUser = await User.findById(toUserId);
+       // console.log(toUser);
         if (!toUser) {
             return res.status(404).json({ error: 'The user you are trying to connect with does not exist' });
         }
 
         // Check if a connection request already exists between the two users 
-        const existingRequest = await connectionRequest.findOne({
+        const existingRequest = await ConnectionRequest.findOne({
             $or: [{
                 fromUserId,
                 toUserId
@@ -43,7 +46,7 @@ requestsRouter.post('/request/send/:status/:requestId', auth, async (req, res) =
             return res.status(400).json({ error: 'A connection request already exists between these users' });
         }
 
-        const newRequest = new connectionRequest({
+        const newRequest = new ConnectionRequest({
             fromUserId,
             toUserId,
             status
