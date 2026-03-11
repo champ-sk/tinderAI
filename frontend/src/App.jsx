@@ -1,21 +1,24 @@
-import Body from "./Body";
+import Body from "./components/Body";
 import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
-import Profile from "./Profile";
-import Login from "./Login";
+import Profile from "./components/Profile";
+import Login from "./components/Login";
+import Feed from "./components/Feed";
 
 function App() {
   return (
     <>
-    
+   
 <BrowserRouter basename="/">
 <Routes >
   <Route path="/" element={<Body/>}>
+  <Route path="/" element={<Feed/>}/>
   <Route path="/login" element={<Login/>}/>
   <Route path="/profile" element={<Profile/>}/>
   </Route>
 </Routes>
 </BrowserRouter>
+
 </>
   );
 }
