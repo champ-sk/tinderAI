@@ -35,13 +35,13 @@ userRouter.get('/user/connections', auth, async (req, res) => {
         }).populate('fromUserId', requiredFields).populate('toUserId', requiredFields);
 
         const data = connections.map((row) => {
-            if (row.fromUserId._id === loggedInUser._id) {
+            if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
                 return row.toUserId;
             }
             return row.fromUserId
 
         })
-        res.json({ data });
+        res.json({ data ,message:"thid"});
 
     } catch (error) {
         res.status(400).json({ error: error.message });
