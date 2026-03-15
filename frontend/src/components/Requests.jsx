@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequests } from "../utils/requestSlice";
+import { addRequests, removeRequest } from "../utils/requestSlice";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 
@@ -10,6 +10,17 @@ import { BASE_URL } from "../utils/constants";
 const Requests = () => {
   const dispatch = useDispatch();
   const requests = useSelector((store) => store.requests);
+
+  const respondRequest = async (status, _id) => {
+    try {
+      const res = axios.post(      
+        BASE_URL + "/request/respond/" + _id + "/" + status,
+        {},
+        { withCredentials: true }
+      );
+      dispatch(removeRequest(_id));
+    } catch (err) {}
+  };
 
   const fetchRequests = async () => {
     try {
@@ -61,13 +72,13 @@ const Requests = () => {
              <div>
               <button
                 className="btn btn-primary mx-2"
-                onClick={() => reviewRequest("rejected", request._id)}
+                onClick={() => respondRequest("rejected", request._id)}
               >
                 Reject
               </button>
               <button
                 className="btn btn-secondary mx-2"
-                onClick={() => reviewRequest("accepted", request._id)}
+                onClick={() => respondRequest("accepted", request._id)}
               >
                 Accept
               </button>
