@@ -15,6 +15,10 @@ authRouter.post('/signup', async (req, res) => {
         //   console.log(hashPassword);
         const user = new User({ firstName, lastName, emailID, password: hashPassword,age, gender });
         const savedUser = await user.save();
+        const token = await jwt.sign({ _id: savedUser._id }, "asdfghjkl", { expiresIn: new Date().getTime() + 24 * 60 * 60 * 1000 });
+            //  console.log(token);
+            res.cookie('token', token);
+
         res.status(201).json({ message: "User created successfully", user: savedUser });
     } catch (error) {
         res.status(400).json({ error: error.message });
