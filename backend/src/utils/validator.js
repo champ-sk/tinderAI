@@ -21,7 +21,7 @@ const validatorSignup = (req) => {
 
 const validatorEditProfile = (req) => {
 
-    const validFields = ['firstName', 'lastName', 'age', 'photourl', 'skills', 'gender'];
+    const validFields = ['firstName', 'lastName', 'age', 'photourl', 'skills', 'gender', 'about'];
     const isValid = Object.keys(req.body).every(field => validFields.includes(field));
     return isValid;
 }
