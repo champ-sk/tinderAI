@@ -302,7 +302,7 @@ const Login = () => {
                 <input
                   type="text"
                   className="form-input"
-                  placeholder="Aryan"
+                  placeholder="Shubham"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -313,7 +313,7 @@ const Login = () => {
                 <input
                   type="text"
                   className="form-input"
-                  placeholder="Singh"
+                  placeholder="Agrawal"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   onKeyDown={handleKeyDown}
