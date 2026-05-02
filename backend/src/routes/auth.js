@@ -23,11 +23,11 @@ authRouter.post("/signup", async (req, res) => {
 const token = await jwt.sign({ _id: savedUser._id }, process.env.JWT_SECRET, { expiresIn: "24h" });
 
     //  console.log(token);
-    res.cookie("token", token, {
+res.cookie("token", token, {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-  maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  secure: true,
+  sameSite: "none",
+  maxAge: 24 * 60 * 60 * 1000,
 });
 
 
@@ -57,11 +57,11 @@ authRouter.post("/login", async (req, res) => {
         expiresIn: "24h",
       });
       //  console.log(token);
-      res.cookie("token", token, {
+   res.cookie("token", token, {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-  maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  secure: true,
+  sameSite: "none",
+  maxAge: 24 * 60 * 60 * 1000,
 });
 
       res.json({ message: "Login successful", user: validUser });

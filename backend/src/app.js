@@ -1,6 +1,8 @@
 const express = require('express');
 const connectDB = require('./config/database');
 const app = express();
+app.set("trust proxy", 1);
+
 const cookieParser = require('cookie-parser');
 const cors = require("cors");
 require('dotenv').config();
