@@ -206,7 +206,7 @@ const Navbar = () => {
         {user ? (
           <div className="nav-right">
             <span className="nav-greeting">
-              Hi, <strong>{user.user?.firstName}</strong>
+              Hi, <strong>{user?.firstName}</strong>
             </span>
 
             <div
@@ -218,7 +218,7 @@ const Navbar = () => {
               >
                 <img
                   src={
-                    user.user?.photourl ||
+                    user?.photourl ||
                     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                   }
                   alt="avatar"
