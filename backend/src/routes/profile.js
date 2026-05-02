@@ -8,7 +8,7 @@ const auth = require('../middlewares/auth');
 profileRouter.get('/profile/view', auth, async (req, res) => {
     try {
         const user = req.user;
-        res.json({ message: 'This is the profile page', user: user });
+        res.json(user);
     } catch (error) {
         res.status(401).json({ error: 'Unauthorized' });
     }

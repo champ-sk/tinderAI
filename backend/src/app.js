@@ -31,7 +31,7 @@ app.use('/', userRouter);
 connectDB().then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => {
-        console.log('Server is running on port 3000');
+        console.log(`Server is running on the port ${PORT}`);
     });
 }).catch((error) => {
     console.error('Failed to connect to MongoDB:', error);
