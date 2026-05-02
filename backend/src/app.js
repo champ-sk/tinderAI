@@ -9,7 +9,25 @@ const PORT = process.env.PORT || 5000;
 
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: function(origin, callback) {
+    // allowed origins list
+    const allowedOrigins = [
+      "https://tinderai.netlify.app",
+      "http://localhost:5173",
+    ];
+
+    // allow requests with no origin (like Postman, mobile apps)
+    if (!origin) return callback(null, true);
+
+    // strip trailing slash if present
+    const cleanOrigin = origin.replace(/\/$/, "");
+
+    if (allowedOrigins.includes(cleanOrigin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS: " + origin));
+    }
+  },
   credentials: true,
 }));
 app.use(cookieParser());
